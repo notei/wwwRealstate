@@ -5,6 +5,8 @@ namespace app\controllers;
 use Yii;
 use app\models\Propiedades;
 use app\models\Direcciones;
+use app\models\Empresas;
+
 use app\models\PropiedadesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -45,9 +47,31 @@ class UserHomeController extends Controller
      */
     public function actionIndex()
     {
-        $model =Propiedades::find()->all();
+        $modelPropiedades =Propiedades::find()->where(['id_usuario'=> Yii::$app->user->identity->id_usuario])->all();
+        $modelPersonas = PersonasContactos::find()->where(['id_usuario'=> Yii::$app->user->identity->id_usuario])->all();
+
+        $empresa = empresas::find()->where(['id_empresa'=> Yii::$app->user->identity->id_empresa])->one();
+
+        $numPropiedadesPublicadas = count(Propiedades::find()->where(['id_usuario'=> Yii::$app->user->identity->id_usuario, 'b_publicada'=>1])->all());
 
         return $this->render('index',[
+            'modelPropiedades' => $modelPropiedades,
+            'modelPersonas' => $modelPersonas,
+            'numPropiedadesPublicadas' => $numPropiedadesPublicadas,
+            'empresa' => $empresa,
+        ]);
+    }
+
+
+    /**
+     * Lists all Propiedades models.
+     * @return mixed
+     */
+    public function actionPropiedades()
+    {
+        $model =Propiedades::find()->all();
+
+        return $this->render('propiedades',[
             'model' => $model,
         ]);
     }
@@ -67,7 +91,7 @@ class UserHomeController extends Controller
         }
 
         return $this->redirect(
-                ['/user-home']);
+                ['/user-home/propiedades']);
     }
 
     

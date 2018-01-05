@@ -21,7 +21,9 @@ use Yii;
  * @property double $num_precio
  * @property double $num_metros
  * @property integer $b_mostrar_direccion
+ * @property string $txt_descripcion
  *
+ * @property ContadoresVisitas[] $contadoresVisitas
  * @property Direcciones[] $direcciones
  * @property Fotografias[] $fotografias
  * @property CatEstadosPropiedades $idEstadoPropiedad
@@ -30,6 +32,7 @@ use Yii;
  * @property Usuarios $idUsuario
  * @property RelPropiedadCaracteristica[] $relPropiedadCaracteristicas
  * @property CatCaracteristicasPropiedades[] $idCaracteristicaPropiedads
+ * @property SolicitudesInformacion[] $solicitudesInformacions
  */
 class Propiedades extends \yii\db\ActiveRecord
 {
@@ -51,6 +54,7 @@ class Propiedades extends \yii\db\ActiveRecord
             [['id_tipo_propiedad', 'id_persona_contacto', 'id_estado_propiedad', 'id_usuario', 'b_publicada', 'b_pausada', 'b_mostrar_direccion'], 'integer'],
             [['fch_publicacion', 'fch_venta', 'fch_publicada'], 'safe'],
             [['num_precio', 'num_metros'], 'number'],
+            [['txt_descripcion'], 'string'],
             [['txt_token'], 'string', 'max' => 45],
             [['txt_token'], 'unique'],
             [['id_estado_propiedad'], 'exist', 'skipOnError' => true, 'targetClass' => CatEstadosPropiedades::className(), 'targetAttribute' => ['id_estado_propiedad' => 'id_estado_propiedad']],
@@ -80,7 +84,16 @@ class Propiedades extends \yii\db\ActiveRecord
             'num_precio' => 'Num Precio',
             'num_metros' => 'Num Metros',
             'b_mostrar_direccion' => 'B Mostrar Direccion',
+            'txt_descripcion' => 'Txt Descripcion',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getContadoresVisitas()
+    {
+        return $this->hasMany(ContadoresVisitas::className(), ['id_propiedad' => 'id_propiedad']);
     }
 
     /**
@@ -145,5 +158,13 @@ class Propiedades extends \yii\db\ActiveRecord
     public function getIdCaracteristicaPropiedads()
     {
         return $this->hasMany(CatCaracteristicasPropiedades::className(), ['id_caracteristicas_propiedades' => 'id_caracteristica_propiedad'])->viaTable('rel_propiedad_caracteristica', ['id_propiedad' => 'id_propiedad']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSolicitudesInformacions()
+    {
+        return $this->hasMany(SolicitudesInformacion::className(), ['id_propiedad' => 'id_propiedad']);
     }
 }

@@ -23,48 +23,77 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 
+    <link rel="stylesheet" type="text/css" href="<?=Yii::$app->homeUrl?>vendor/open-iconic-master/font/css/open-iconic-bootstrap.css">
+
+    <base href="<?=Yii::$app->homeUrl?>">
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111944812-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-111944812-1');
+    </script>
+
 
 </head>
 <body>
-
-
-<div class="container">
 
 
 <?php $this->beginBody() ?>
 
 <?php $this->endBody() ?>
 
-<script type="text/javascript" src="vendor/bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="<?=Yii::$app->homeUrl?>vendor/bootstrap/js/bootstrap.bundle.js"></script>
 
 
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="<?=Yii::$app->homeUrl?>"><?=Yii::$app->name?></a>
 
-<div class="wrap">
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
 
-<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="index.php"><?=Yii::$app->name?></a>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <?php echo(
+            <?php echo(
             Yii::$app->user->isGuest ? '' : 
                 '<li class="nav-item">'
-                . "<a class='nav-link' href='index.php?r=user-home'>home</a>"
+                . "<a class='nav-link' href='" . Yii::$app->homeUrl . "user-home'>Home</a>"
                 .'</li>'
             );
         ?>
 
-      <li class="nav-item">
+        
+
+      
+        <?php echo(
+            Yii::$app->user->isGuest ? '' : 
+                '<li class="nav-item">'
+                . "<a class='nav-link' href='" . Yii::$app->homeUrl . "propiedad-wizard'>Agregar propiedad</a>"
+                .'</li>'
+            );
+        ?>
+
+        <?php echo(
+            !Yii::$app->user->isGuest ? '' : 
+                '<li class="nav-item">'
+                . "<a class='nav-link' href='" . Yii::$app->homeUrl . "usuarios/create'>Crear una cuenta</a>"
+                .'</li>'
+            );
+        ?>
+
+        <li class="nav-item">
         <?php echo(
             Yii::$app->user->isGuest ? (
-                "<a class='nav-link' href='index.php?r=site/login'>entrar</a>"
+                "<a class='nav-link' href='" . Yii::$app->homeUrl . "site/login'>Entrar</a>"
             ) : (
-                Html::beginForm(['/site/logout'], 'post')
+                Html::beginForm([  'site/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->txt_correo . ')',
+                    'Salir',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()
@@ -74,45 +103,57 @@ AppAsset::register($this);
             ?>
       </li>
 
-      
-        <?php echo(
-            Yii::$app->user->isGuest ? '' : 
-                '<li class="nav-item">'
-                . "<a class='nav-link' href='index.php?r=propiedad-wizard'>agregar</a>"
-                .'</li>'
-            );
-        ?>
-      
+        </ul>
+        
+      </div>
+    </nav>
 
+     <div class="container">
 
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-</nav>
-
-
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+<div class="row">
+    <div class="col-md-10">
+    <?= $content ?>
     </div>
 </div>
-
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
-</footer>
 
 
-</div>
+    <footer id="myFooter">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h5>Inicio</h5>
+                    <ul>
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="<?=Yii::$app->homeUrl?>usuarios/create">Crear una cuenta</a></li>
+                        <li><a href="<?=Yii::$app->homeUrl?>site/login">Entrar</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h5>About us</h5>
+                    <ul>
+                        <li><a href="index.php?">Terminos y condiciones</a></li>
+                        <li><a href="#">Contact us</a></li>
+                        <li><a href="#">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Help desk</a></li>
+                        <li><a href="#">Forums</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3 info">
+                    <h5>Información</h5>
+                    <p> Pubica tu casa, departameto o terreno para que tus clientes te puedan encontrar facilmente. </p>
+                </div>
+            </div>
+        </div>
+        
+    </footer>
+
 </body>
 </html>
 <?php $this->endPage() ?>

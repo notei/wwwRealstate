@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <div class="row">
-    <div class="fotos col-md-5 col-sm-12">
+    <div class="fotos col-md-8 col-sm-12">
         <!-- Carrusel -->
         <div 
             id="carousel_<?=$model->id_propiedad?>" 
@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 foreach ($fotos as $item):?>
                     <div class="carousel-item <?=$count==0?'active':''?>">
                         <img class="d-block img-fluid" 
-                        src="uploads/<?=$model->txt_token?>/<?=$item->txt_url?>" 
+                        src="<?=Yii::$app->homeUrl?>uploads/<?=$model->txt_token?>/<?=$item->txt_url?>" 
                         style="width: 100%;
         height: 100%;
         object-fit: contain;">  
@@ -75,12 +75,19 @@ $this->params['breadcrumbs'][] = $this->title;
           </a>
         </div> 
         <!-- cierra carrusel -->
+
+    <p class="txt_descripcion"><img src="<?=Yii::$app->homeUrl?>img/ico/ico_desc.png" class="ico"><?=$model->txt_descripcion?></p>
+
     </div>
 
 
 
-    <div class="col-md-6 col-sm-12">
-    Forma de contacto
+    <div class="col-md-4 col-sm-12">
+        <div class="area_container">
+            <div id="forma_contacto">
+                
+            </div>
+        </div>
     </div>
 </div>
 
@@ -88,58 +95,101 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="row">
     <div class="col-md-4">
-        <?
-        $verDir = $model->b_mostrar_direccion;
-        $direcciones = $model->getDirecciones()->all();
-        foreach ($direcciones as $item):
-            $municipio = $item->idMunicipio;
-            $estado = $municipio->idEstado;
-            $pais = $estado->idPais;
-            ?>
-            <?php if($verDir): ?>
-                <?=$item->txt_calle?>
-                <?=$item->txt_num_exterior?> 
-                <?=$item->txt_num_interior?>
-            <?endif?>    
-            Col. <?=$item->txt_colonia?>
-            CP. <?=$item->num_cp?>, <?=$municipio->txt_nombre?>
-            <?=$estado->txt_nombre?> 
-            <?=$pais->txt_nombre?>        
-        <?php endforeach?>
-    </div>
-
-
-
-
-    <div class="col-md-4">
-        <?php
-            $contacto = $model->idPersonaContacto;
-            $mediosContacto = $contacto->mediosContactos;
-        ?>
-        <?=$contacto->txt_nombre?>
-        <ul>
-            <?foreach ($mediosContacto as $item):?>
-
-                <li><?=$item->idTipoContacto->txt_nombre?>:<?=$item->txt_valor?></li>
+        <div class="area_container">
+            <div class="title_container">
+                <span class="ico">
+                    <img src="<?=Yii::$app->homeUrl?>img/ico/ico_loc.png" class="ico">
+                </span>
+                <span class="title">Ubicación del inmueble</span> 
+            </div> 
+            <div class="body_container">              
+                <?
+                $verDir = $model->b_mostrar_direccion;
+                $direcciones = $model->getDirecciones()->all();
+                foreach ($direcciones as $item):
+                    $municipio = $item->idMunicipio;
+                    $estado = $item->idEstado;
+                    $ciudad = $item->idCiudad;
+                    $pais = $estado->idPais;
+                    ?>
                     
-            <?endforeach?>
-        </ul>
-
+                    <?php if($verDir): ?>
+                        <?=$item->txt_calle?>
+                        <?=$item->txt_num_exterior?> 
+                        <?=$item->txt_num_interior?>
+                    <?endif?>    
+                    Col. <?=$item->txt_colonia?>
+                    CP. <?=$item->num_cp?>, <?=$municipio->txt_nombre?>,
+                    <?=$ciudad->txt_nombre?>,
+                    <?=$estado->txt_nombre?>, 
+                    <?=$pais->txt_nombre?>        
+                <?php endforeach?>
+            </div>
+        </div>    
     </div>
 
 
     <div class="col-md-4">
-        <ul>
-            <?
-            $caracteristicas = $model->getRelPropiedadCaracteristicas()->all();
-            
-            foreach ($caracteristicas as $item): ?>
-                <li><?=$item->idCaracteristicaPropiedad->txt_nombre?>:<?=$item->txt_valor?> </li>
-            <?php
-                endforeach
-            ?>
-        </ul>
+        <div class="area_container">
+            <div class="title_container">
+                <span class="ico">
+                    <img src="<?=Yii::$app->homeUrl?>img/ico/ico_house.png" class="ico">
+                </span>
+                <span class="title">Características</span> 
+            </div> 
+            <div class="body_container">
+                <ul class="list_caracteristica">
+                    <?
+                    $caracteristicas = $model->getRelPropiedadCaracteristicas()->all();
+                    
+                    foreach ($caracteristicas as $item): ?>
+                        <li>
+                            <img src="<?=Yii::$app->homeUrl?>img/ico/<?=$item->idCaracteristicaPropiedad->txt_ico?>" class="ico">
+                            <span class="title_caracteristica"><?=$item->idCaracteristicaPropiedad->txt_nombre?></span> 
+                            <span class="body_caracteristica"><?=$item->txt_valor?></span>
+                        </li>
+                    <?php
+                        endforeach
+                    ?>
+                </ul>
+            </div>
+        </div>
     </div>
+
+
+    <div class="col-md-4">
+        <div class="area_container">
+            <div class="title_container">
+                <span class="ico">
+                    <img src="<?=Yii::$app->homeUrl?>img/ico/ico_person.png" class="ico">
+                </span>
+                <span class="title">Datos del anunciante</span> 
+            </div> 
+            <div class="body_container">
+                <?php
+                    $contacto = $model->idPersonaContacto;
+                    $mediosContacto = $contacto->mediosContactos;
+                ?>
+                
+                <?=$contacto->txt_nombre?>
+                <ul class="list_caracteristica">
+                    <?foreach ($mediosContacto as $item):?>
+
+                        <li>
+                            <span class="title_caracteristica"><?=$item->idTipoContacto->txt_nombre?></span> 
+                            <span class="body_caracteristica"><?=$item->txt_valor?></span>
+                        </li>
+                            
+                    <?endforeach?>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    
 </div>
 <!-- termina second row -->
 
@@ -149,6 +199,12 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 </div>
 <script>
+
+$( document ).ready(function() {
+  $( "#forma_contacto" ).load( "<?=Yii::$app->homeUrl?>solicitudes-informacion/create?token=<?=$model->txt_token?>" );
+});
+
+
       function initMap() {
         var uluru = {lat: 19.5023719, lng: -99.2544794};
         var map = new google.maps.Map(document.getElementById('map'), {

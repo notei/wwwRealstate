@@ -17,6 +17,10 @@ use app\models\Fotografias;
 use app\models\UploadForm;
 use app\models\CatCaracteristicasPropiedades;
 
+use app\models\CatEstados;
+use app\models\CatCiudades;
+use app\models\CatMunicipios;
+
 use yii\web\UploadedFile;
 
 /**
@@ -53,7 +57,9 @@ class PropiedadWizardController extends Controller
         $personasContacto = PersonasContactos::find()->all();
 
         if ($model->load(Yii::$app->request->post() ) ){
-            $model->txt_token = uniqid('p_', true);
+            if($token == null){
+                $model->txt_token = uniqid('p_', true);
+            }
             $model->b_publicada = 0;
             $model->id_estado_propiedad = 1;
             $model->id_usuario =  Yii::$app->user->identity->id_usuario;
@@ -76,6 +82,11 @@ class PropiedadWizardController extends Controller
 
     public function actionDireccion($token,$id)
     {
+
+        $estadoModel = CatEstados::find()->where(['b_habilitado'=>1])->all();
+        $ciudadModel = CatCiudades::find()->where(['b_habilitado'=>1])->all();
+        $municipioModel = CatMunicipios::find()->where(['b_habilitado'=>1])->all();
+
 
         $propiedad = Propiedades::find()->where(['txt_token' => $token])->one();
         $model = new Direcciones();
@@ -100,6 +111,9 @@ class PropiedadWizardController extends Controller
         } else {
             return $this->render('createdireccion', [
                 'model' => $model,
+                'estadoModel'=>$estadoModel,
+                'ciudadModel'=>$ciudadModel,
+                'municipioModel'=>$municipioModel,
             ]);
         }
     }
@@ -108,20 +122,30 @@ class PropiedadWizardController extends Controller
     public function actionCaracteristicas($token,$id)
     {
 
-        $tiposCaracteristicas = CatCaracteristicasPropiedades::find()->where(['b_habilitado' => 1])->all();
+        
 
         $propiedad = Propiedades::find()->where(['txt_token' => $token])->one();
         $model = new RelPropiedadCaracteristica();
 
         $model->id_propiedad = $propiedad->id_propiedad;
 
+
+        $valuesModel = RelPropiedadCaracteristica::find()->where(['id_propiedad'=> $propiedad->id_propiedad])->all();
+
+        $ids = array();
+        foreach ($valuesModel as $item) {
+            array_push($ids,$item->id_caracteristica_propiedad);
+        }
+
+
+        $tiposCaracteristicas = CatCaracteristicasPropiedades::find()->where(['b_habilitado' => 1])->andWhere(['not in', 'id_caracteristicas_propiedades', $ids])->all();
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             
             
 
-
             return $this->redirect(
-                ['fotografia', 
+                ['caracteristicas', 
                 'token' => $propiedad->txt_token, 
                 'id' => $propiedad->id_propiedad
                 ]);
@@ -131,6 +155,7 @@ class PropiedadWizardController extends Controller
             return $this->render('createcaracteristica', [
                 'model' => $model,
                 'tiposCaracteristicas' => $tiposCaracteristicas,
+                'valuesModel' => $valuesModel,
             ]);
         }
     }
@@ -170,10 +195,15 @@ class PropiedadWizardController extends Controller
 
         if ($resUpload && $model->save()) {
             echo "saved";
-            return $this->redirect(['view', 'id' => $model->id_fotografia]);
+            return $this->redirect(['fotografia',
+             'id' => $model->id_fotografia,
+             'token' => $propiedad->txt_token, 
+                'id' => $propiedad->id_propiedad,
+                ]);
         } else {
             return $this->render('createfotografia', [
                 'model' => $modelUpload,
+                'propiedad' => $propiedad,
             ]);
         }
     }

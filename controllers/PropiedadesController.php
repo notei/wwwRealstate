@@ -8,6 +8,7 @@ use app\models\PropiedadesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\ContadorVisitas;
 
 /**
  * PropiedadesController implements the CRUD actions for Propiedades model.
@@ -35,13 +36,7 @@ class PropiedadesController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PropiedadesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+     return $this->redirect(['site/index']);   
     }
 
     /**
@@ -51,9 +46,30 @@ class PropiedadesController extends Controller
      */
     public function actionView($id)
     {
+
+        $model = Propiedades::find()->where(['txt_token' => $id])->one();
+        if($model == null){
+            return $this->redirect(['site/index']);         
+        }
+
+
+        $fechaVista = date_create()->format('Y-m-d');
+        
+
+        //Carga las vistas de la propiedad
+        $visita = ContadorVisitas::find()->where(['fch_vista'=>$fechaVista, 'id_propiedad'=>$model->id_propiedad])->one();
+        if($visita == null){
+            $visita = new ContadorVisitas();
+        }
+        $visita->id_propiedad = $model->id_propiedad;
+        $visita->num_contador = $visita->num_contador + 1;
+        $visita->fch_vista = $fechaVista;
+
+        $visita->save();
+
         return $this->render('view', [
             //'model' => $this->findModel($id),
-            'model' => Propiedades::find()->where(['txt_token' => $id])->one()
+            'model' => $model,
         ]);
     }
 
@@ -62,6 +78,7 @@ class PropiedadesController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+    /*
     public function actionCreate()
     {
         $model = new Propiedades();
@@ -79,6 +96,7 @@ class PropiedadesController extends Controller
             ]);
         }
     }
+    */
 
     /**
      * Updates an existing Propiedades model.
@@ -86,6 +104,7 @@ class PropiedadesController extends Controller
      * @param integer $id
      * @return mixed
      */
+    /*
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -98,19 +117,21 @@ class PropiedadesController extends Controller
             ]);
         }
     }
-
+    */
     /**
      * Deletes an existing Propiedades model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
+    /*
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
+    */
 
     /**
      * Finds the Propiedades model based on its primary key value.
@@ -119,6 +140,7 @@ class PropiedadesController extends Controller
      * @return Propiedades the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
+    /*
     protected function findModel($id)
     {
         if (($model = Propiedades::findOne($id)) !== null) {
@@ -127,4 +149,5 @@ class PropiedadesController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    */
 }

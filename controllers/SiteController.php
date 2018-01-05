@@ -11,6 +11,10 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 
 use app\models\Propiedades;
+use app\models\Direcciones;
+use app\models\CatEstados;
+
+use yii\db\Query;
 
 class SiteController extends Controller
 {
@@ -56,18 +60,40 @@ class SiteController extends Controller
         ];
     }
 
+
     /**
      * Displays homepage.
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($cp = null,$estado=null,$municipio=null,$colonia=null)
     {
 
-        $model =Propiedades::find()->where(['b_publicada'=> '1'])->all();
+        $_where = array();
+        
+        if($cp != null){
+            $_where['num_cp'] = $cp;
+        }else if($colonia != null){
+            $_where['id_colonia'] = $colonia;
+        }
+
+
+
+        $_where = ['in',
+                'id_propiedad',
+                (new Query())
+                    ->select('id_propiedad')
+                    ->from(Direcciones::tableName())
+                    ->where($_where)];
+
+        $model =Propiedades::find()->where($_where)->andWhere(['b_publicada'=>1])->all();
+
+        $estadoModel = CatEstados::find()->where(['b_habilitado'=>1])->all();
 
         return $this->render('index',[
             'model' => $model,
+            'estadoModel' => $estadoModel,
+            'cp' => $cp,
         ]);
     }
 
@@ -108,6 +134,7 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
+    /*
     public function actionContact()
     {
         $model = new ContactForm();
@@ -120,6 +147,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+    */
 
     /**
      * Displays about page.
@@ -129,5 +157,10 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function actionTerminos()
+    {
+        return $this->render('terminos');
     }
 }

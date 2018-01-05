@@ -11,6 +11,8 @@ use Yii;
  * @property string $txt_nombre
  * @property integer $b_habilitado
  * @property integer $num_orden
+ * @property integer $num_tipo
+ * @property string $txt_ico
  *
  * @property RelPropiedadCaracteristica[] $relPropiedadCaracteristicas
  * @property Propiedades[] $idPropiedads
@@ -31,9 +33,9 @@ class CatCaracteristicasPropiedades extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_caracteristicas_propiedades', 'txt_nombre', 'b_habilitado'], 'required'],
-            [['id_caracteristicas_propiedades', 'b_habilitado', 'num_orden'], 'integer'],
-            [['txt_nombre'], 'string', 'max' => 45],
+            [['txt_nombre', 'b_habilitado'], 'required'],
+            [['b_habilitado', 'num_orden', 'num_tipo'], 'integer'],
+            [['txt_nombre', 'txt_ico'], 'string', 'max' => 45],
         ];
     }
 
@@ -47,6 +49,8 @@ class CatCaracteristicasPropiedades extends \yii\db\ActiveRecord
             'txt_nombre' => 'Txt Nombre',
             'b_habilitado' => 'B Habilitado',
             'num_orden' => 'Num Orden',
+            'num_tipo' => 'Num Tipo',
+            'txt_ico' => 'Txt Ico',
         ];
     }
 

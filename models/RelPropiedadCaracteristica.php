@@ -45,8 +45,8 @@ class RelPropiedadCaracteristica extends \yii\db\ActiveRecord
     {
         return [
             'id_propiedad' => 'Id Propiedad',
-            'id_caracteristica_propiedad' => 'Id Caracteristica Propiedad',
-            'txt_valor' => 'Txt Valor',
+            'id_caracteristica_propiedad' => 'Caracteristica',
+            'txt_valor' => 'Valor',
         ];
     }
 

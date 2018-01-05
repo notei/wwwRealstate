@@ -12,10 +12,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="fotografias-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>Agregar fotografía</h1>
 
     <?= $this->render('_formfotografia', [
         'model' => $model,
+        'propiedad' => $propiedad,
     ]) ?>
 
 </div>

@@ -14,14 +14,20 @@ use Yii;
  * @property integer $id_empresa
  * @property integer $b_administrador
  * @property integer $b_habilitado
- * @property string $txt_authkey
+ * @property string $txt_token
+ * @property string $fch_registro
  *
+ * @property PersonasContactos[] $personasContactos
  * @property Propiedades[] $propiedades
  * @property Empresas $idEmpresa
  * @property CatTiposUsuarios $idTipoUsuario
  */
 class Usuarios extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterface
 {
+
+     public $txt_nombre;
+     public $password_repeat;
+
     /**
      * @inheritdoc
      */
@@ -36,9 +42,15 @@ class Usuarios extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterfa
     public function rules()
     {
         return [
-            [['id_usuario', 'id_tipo_usuario', 'txt_correo', 'txt_password', 'txt_authkey'], 'required'],
-            [['id_usuario', 'id_tipo_usuario', 'id_empresa', 'b_administrador', 'b_habilitado'], 'integer'],
-            [['txt_correo', 'txt_password', 'txt_authkey'], 'string', 'max' => 45],
+            [['id_tipo_usuario', 'txt_correo', 'txt_password', 'txt_token','txt_nombre'], 'required'],
+            [['id_tipo_usuario', 'id_empresa', 'b_administrador', 'b_habilitado'], 'integer'],
+            ['txt_correo', 'email'],
+            [['fch_registro'], 'safe'],
+            [['txt_nombre'], 'safe'],
+            [['txt_password'], 'string', 'min' => 6],
+            ['password_repeat', 'required'],
+            ['password_repeat', 'compare', 'compareAttribute'=>'txt_password', 'skipOnEmpty' => false, 'message'=>"La contraseña no coincide" ],
+            [['txt_correo', 'txt_password', 'txt_token'], 'string', 'max' => 45],
             [['id_empresa'], 'exist', 'skipOnError' => true, 'targetClass' => Empresas::className(), 'targetAttribute' => ['id_empresa' => 'id_empresa']],
             [['id_tipo_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => CatTiposUsuarios::className(), 'targetAttribute' => ['id_tipo_usuario' => 'id_tipo_usuario']],
         ];
@@ -51,14 +63,25 @@ class Usuarios extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterfa
     {
         return [
             'id_usuario' => 'Id Usuario',
-            'id_tipo_usuario' => 'Id Tipo Usuario',
-            'txt_correo' => 'Txt Correo',
-            'txt_password' => 'Txt Password',
+            'id_tipo_usuario' => 'Tipo de cuenta',
+            'txt_correo' => 'Correo',
+            'txt_password' => 'Contraseña',
             'id_empresa' => 'Id Empresa',
             'b_administrador' => 'B Administrador',
             'b_habilitado' => 'B Habilitado',
-            'txt_authkey' => 'Txt Authkey',
+            'txt_token' => 'Txt Token',
+            'fch_registro' => 'Fch Registro',
+            'password_repeat' => 'Repetir contraseña',
+            'txt_nombre' => 'Nombre de persona de contacto',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPersonasContactos()
+    {
+        return $this->hasMany(PersonasContactos::className(), ['id_usuario' => 'id_usuario']);
     }
 
     /**
@@ -86,6 +109,8 @@ class Usuarios extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterfa
     }
 
 
+
+    /* --------------- login ------------- */
 
 
      /**

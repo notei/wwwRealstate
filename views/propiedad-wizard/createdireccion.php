@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Direcciones */
 
-$this->title = 'Create Direcciones';
+$this->title = 'Dirección';
 $this->params['breadcrumbs'][] = ['label' => 'Direcciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,6 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_formdireccion', [
         'model' => $model,
+        'estadoModel'=>$estadoModel,
+        'ciudadModel'=>$ciudadModel,
+        'municipioModel'=>$municipioModel,
     ]) ?>
 
 </div>

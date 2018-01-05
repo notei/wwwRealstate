@@ -1,105 +1,93 @@
-<h1>Home</h1>
-
-<p>Mis propiedades</p>
-
 
 <div class="row">
-<? foreach ($model as $item):
-?>
-    <div class="col-md-4 col-sm-12">
+	<div class="col-md-4">
+		<div class="card">
+		  <div class="card-header">
+		    Cliente
+		  </div>
+		  <div class="card-block">
+		    <h5 class="card-title"><?=Yii::$app->user->identity->txt_correo ?></h5>
+		    
+		    
+		    <ul class="list-group list-group-flush">
+			    <li class="list-group-item">Cuenta: <?=Yii::$app->user->identity->idTipoUsuario->txt_nombre ?></li>
+			    <li class="list-group-item">
+			    	<a href="<?=Yii::$app->homeUrl?>user-home/propiedades">
+			    		Propiedades: <?=$numPropiedadesPublicadas ?> pub. de <?=count($modelPropiedades) ?>
+			    	</a>
+		    	</li>
+			    <li class="list-group-item">
+			    	<a href="<?=Yii::$app->homeUrl?>user-home/contactos">
+			    		Contactos registrados: <?=count($modelPersonas) ?>
+		    		</a>
+	    		</li>
+		  	</ul>
 
-        
-        <div class="card" style="width: 100%">
-        <div style="background-color: #ccc">
-          
-        <!-- Carrusel -->
-          <div id="carousel_<?=$item->id_propiedad?>" class="carousel slide" data-ride="carousel_<?=$item->id_propiedad?>">
+		  </div>
+		</div>
 
-            <ol class="carousel-indicators">
-                <li data-target="#carousel_<?=$item->id_propiedad?>" data-slide-to="0" class="active"></li>
-                <li data-target="#carousel_<?=$item->id_propiedad?>" data-slide-to="1"></li>
-                <li data-target="#carousel_<?=$item->id_propiedad?>" data-slide-to="2"></li>
-              </ol>
+<?if($empresa != null): ?>
 
-              <div class="carousel-inner" role="listbox">
-                <div class="carousel-item active">
-                  <img class="d-block img-fluid" src="img/pexels-photo-186077.jpg" alt="First slide" style="height: 200px">
-                </div>
-                <div class="carousel-item">
-                  <img class="d-block img-fluid" src="img/pexels-photo-186077.jpg" alt="Second slide" style="height: 200px">
-                </div>
-                <div class="carousel-item">
-                  <img class="d-block img-fluid" src="img/pexels-photo-186077.jpg" alt="Third slide" style="height: 200px">
-                </div>
-              </div>
-              <a class="carousel-control-prev" href="#carousel_<?=$item->id_propiedad?>" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="#carousel_<?=$item->id_propiedad?>" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
-            </div> 
-            <!-- cierra carrusel -->
-          
+	
+		<div class="card">
+		  <div class="card-header">
+		    Empresa
+		  </div>
+		  <div class="card-block">
+		    <h5 class="card-title"><?=$empresa->txt_nombre?></h5>
+		    
+		    
+		    <ul class="list-group list-group-flush">
+			    <li class="list-group-item">
+			    	<img class="ico" src="<?=Yii::$app->homeUrl?>img/ico/ico_rfc.png">
+			    	<?=$empresa->txt_rfc?>
+		    	</li>
+			    <li class="list-group-item">
+			    	<img class="ico" src="<?=Yii::$app->homeUrl?>img/ico/ico_loc.png">
+			    	<?=$empresa->txt_direccion?>
+		    	</li>
+			    <li class="list-group-item">
+			    	<img class="ico" src="<?=Yii::$app->homeUrl?>img/ico/ico_person.png">
+			    	<?=$empresa->txt_persona_contacto?>
+		    	</li>
+			    <li class="list-group-item">
+			    	<img class="ico" src="<?=Yii::$app->homeUrl?>img/ico/ico_phone.png">
+			    	<?=$empresa->txt_telefono?>
+			    </li>
+			    <li class="list-group-item">
+			    	<img class="ico" src="<?=Yii::$app->homeUrl?>img/ico/ico_loc.png">
+			    	<?=$empresa->txt_calle?> 
+			    	<?=$empresa->txt_num_exterior?> 
+			    	<?=$empresa->txt_num_interior?>  
+			    	<?=$empresa->idColonia->txt_nombre?> 
+			    	<?=$empresa->idMunicipio->txt_nombre?> 
+			    	<?=$empresa->idCiudad->txt_nombre?> 
+			    	<?=$empresa->idEstado->txt_nombre?>
+			    	CP, <?=$empresa->txt_cp?></li>
+		  	</ul>
 
-        </div>
+		  </div>
+		</div>
+	<?endif?>	
 
+	</div>
 
+<?if($empresa != null): ?>
+	<div class="col-md-8">
+	<div class="card">
+		  <div class="card-header">
+		    Mapa
+		  </div>
+		  <div class="card-block">
+		    
+		<div style="width: 100%; min-height: 400px; background-color: red;background-size: cover;  background-image: url('https://maps.googleapis.com/maps/api/staticmap?center=<?=$empresa->num_lat?>,<?=$empresa->num_long?>&zoom=10&size=600x600&maptype=roadmap&markers=color:blue%7Clabel:S%7C<?=$empresa->num_lat?>,<?=$empresa->num_long?>&key=AIzaSyApQXWD2AIAGyxTXoBGsOBhzXZB1gw3UO8'">
+			
+	</div>
+	</div>
+	</div>
+	<?endif?>	
 
-          <div class="card-block">
-            <h4 class="card-title"><?=$item->idTipoPropiedad->txt_nombre?></h4>
-            <p class="card-text">
-              <img src="img/ico/ico_price.png" class="ico"> $<?=number_format($item->num_precio, 2, '.', ',')?>
-            </p>
-            <p class="card-text">
-              <img src="img/ico/ico_loc.png" class="ico"> Col. <?=$item->direcciones[0]->txt_colonia?>, 
-              <?=$item->direcciones[0]->idMunicipio->txt_nombre?>, 
-              <?=$item->direcciones[0]->idMunicipio->idEstado->txt_nombre?>
-            </p>
-            <p class="card-text">
-              <img src="img/ico/ico_size.png" class="ico"> 
-              <?=$item->num_metros?> m2
-            </p>  
-              <?php 
-              foreach ($item->relPropiedadCaracteristicas as $elem):
-              ?>
-                <p class="card-text">
-                  <?=$elem->idCaracteristicaPropiedad->txt_nombre?>:
-                  <?=$elem->txt_valor?>
-                </p>    
-              <?php                
-              endforeach
-          
-              ?>
-            </p>
-            
-            <a href="index.php?r=propiedades%2Fview&id=<?=$item->txt_token?>" class="btn btn-primary">Ver</a>
-            <a href="index.php?r=propiedad-wizard&token=<?=$item->txt_token?>" class="btn btn-primary">Editar</a>
-           
-            	<a href="index.php?r=user-home/publish&token=<?=$item->txt_token?>" class="btn btn-primary"><?=$item->b_publicada==0?'Publicar':'Despublicar'?></a>
-            
-
-          </div>
-        </div>
-
-    </div>
-<? endforeach; ?>
 </div>
 
-
-
-<script type="text/javascript">
-
-$( document ).ready(function() {
-
-        console.log("foreach");
-    $('.carousel').each(function(index){
-        console.log($(this));
-        $(this).carousel();
-    });
-});
-
-    
-</script>
+<?php if($empresa != null):?>
+<?endif?>

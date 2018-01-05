@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\RelPropiedadCaracteristica */
 
-$this->title = 'Create Rel Propiedad Caracteristica';
+$this->title = 'Caracteristicas';
 $this->params['breadcrumbs'][] = ['label' => 'Rel Propiedad Caracteristicas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_formcaracteristica', [
         'model' => $model,
         'tiposCaracteristicas' => $tiposCaracteristicas,
+        'valuesModel' => $valuesModel,
     ]) ?>
 
 </div>

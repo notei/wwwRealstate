@@ -18,8 +18,14 @@ use Yii;
  * @property string $txt_num_interior
  * @property string $txt_colonia
  * @property string $txt_token
+ * @property integer $id_colonia
+ * @property integer $id_ciudad
+ * @property integer $id_estado
  *
  * @property CatMunicipios $idMunicipio
+ * @property CatCiudades $idCiudad
+ * @property CatColonias $idColonia
+ * @property CatEstados $idEstado
  * @property Propiedades $idPropiedad
  */
 class Direcciones extends \yii\db\ActiveRecord
@@ -38,13 +44,16 @@ class Direcciones extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_propiedad', 'id_municipio', 'num_cp', 'num_lat', 'num_lon', 'txt_calle', 'txt_num_exterior', 'txt_colonia'], 'required'],
-            [['id_propiedad', 'id_municipio'], 'integer'],
+            [['id_propiedad', 'id_municipio', 'num_cp', 'num_lat', 'num_lon', 'txt_calle', 'txt_num_exterior', 'txt_colonia', 'id_colonia', 'id_ciudad', 'id_estado'], 'required'],
+            [['id_propiedad', 'id_municipio', 'id_colonia', 'id_ciudad', 'id_estado'], 'integer'],
             [['num_lat', 'num_lon'], 'number'],
             [['num_cp'], 'string', 'max' => 5],
             [['txt_calle', 'txt_num_exterior', 'txt_num_interior', 'txt_colonia', 'txt_token'], 'string', 'max' => 45],
             [['txt_token'], 'unique'],
-            [['id_municipio'], 'exist', 'skipOnError' => true, 'targetClass' => CatMunicipios::className(), 'targetAttribute' => ['id_municipio' => 'id_municipios']],
+            [['id_municipio'], 'exist', 'skipOnError' => true, 'targetClass' => CatMunicipios::className(), 'targetAttribute' => ['id_municipio' => 'id_municipio']],
+            [['id_ciudad'], 'exist', 'skipOnError' => true, 'targetClass' => CatCiudades::className(), 'targetAttribute' => ['id_ciudad' => 'id_ciudad']],
+            [['id_colonia'], 'exist', 'skipOnError' => true, 'targetClass' => CatColonias::className(), 'targetAttribute' => ['id_colonia' => 'id_colonia']],
+            [['id_estado'], 'exist', 'skipOnError' => true, 'targetClass' => CatEstados::className(), 'targetAttribute' => ['id_estado' => 'id_estado']],
             [['id_propiedad'], 'exist', 'skipOnError' => true, 'targetClass' => Propiedades::className(), 'targetAttribute' => ['id_propiedad' => 'id_propiedad']],
         ];
     }
@@ -66,6 +75,9 @@ class Direcciones extends \yii\db\ActiveRecord
             'txt_num_interior' => 'Txt Num Interior',
             'txt_colonia' => 'Txt Colonia',
             'txt_token' => 'Txt Token',
+            'id_colonia' => 'Id Colonia',
+            'id_ciudad' => 'Id Ciudad',
+            'id_estado' => 'Id Estado',
         ];
     }
 
@@ -74,7 +86,31 @@ class Direcciones extends \yii\db\ActiveRecord
      */
     public function getIdMunicipio()
     {
-        return $this->hasOne(CatMunicipios::className(), ['id_municipios' => 'id_municipio']);
+        return $this->hasOne(CatMunicipios::className(), ['id_municipio' => 'id_municipio']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdCiudad()
+    {
+        return $this->hasOne(CatCiudades::className(), ['id_ciudad' => 'id_ciudad']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdColonia()
+    {
+        return $this->hasOne(CatColonias::className(), ['id_colonia' => 'id_colonia']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdEstado()
+    {
+        return $this->hasOne(CatEstados::className(), ['id_estado' => 'id_estado']);
     }
 
     /**

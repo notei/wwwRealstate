@@ -1,9 +1,52 @@
 <?php
 
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+
 /* @var $this yii\web\View */
 
 $this->title = 'Home';
 ?>
+
+
+<form action="index.php" method="GET">
+
+  <div class="row" id="search">
+    <div class="col-md-2">
+      <label>CP</label> 
+      <input type="text" name="cp" class="form-find form-control" value="<?=$cp?>">
+    </div>
+    <div class="col-md-3">
+      <label>Estado</label>
+       <select name="estado" id="estado" class="form-find form-control" onchange="loadMunicipio(this.value)">
+        <option></option>
+      </select>
+
+    </div>
+    <div class="col-md-3">
+      <label>Municipio</label>
+      <select name="municipio" id="municipio" class="form-find form-control" onchange="loadColonias(this.value)">
+        <option></option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label>Colonia</label> 
+      <select name="colonia" id="colonia" class="form-find form-control">
+        <option></option>
+      </select>
+    </div>
+
+    <div class="col-md-1 align-bottom">
+    <label>&nbsp;</label> 
+    <button type="submit" class="btn btn-primary align-bottom" aria-label="Left Align">
+      <span class="oi oi-magnifying-glass"></span>
+      Búscar
+    </button>
+     </div> 
+
+  </div>
+</form>
+
 <div class="row">
 <? foreach ($model as $item):
 ?>
@@ -17,22 +60,36 @@ $this->title = 'Home';
           <div id="carousel_<?=$item->id_propiedad?>" class="carousel slide" data-ride="carousel_<?=$item->id_propiedad?>">
 
             <ol class="carousel-indicators">
-                <li data-target="#carousel_<?=$item->id_propiedad?>" data-slide-to="0" class="active"></li>
-                <li data-target="#carousel_<?=$item->id_propiedad?>" data-slide-to="1"></li>
-                <li data-target="#carousel_<?=$item->id_propiedad?>" data-slide-to="2"></li>
-              </ol>
+              <?
+                  $fotos = $item->getFotografias()->all();
+                  $count = 0;
+                  foreach ($fotos as $pic):?>
+                  <li data-target="#carousel_<?=$pic->id_propiedad?>" 
+                      data-slide-to="<?=$count?>" 
+                      class="<?=$count==0?'active':''?>">
+                  </li>                    
+              <?php
+                  $count++;
+                  endforeach;
+              ?>
+          </ol>
 
               <div class="carousel-inner" role="listbox">
-                <div class="carousel-item active">
-                  <img class="d-block img-fluid" src="img/pexels-photo-186077.jpg" alt="First slide" style="height: 200px">
-                </div>
-                <div class="carousel-item">
-                  <img class="d-block img-fluid" src="img/pexels-photo-186077.jpg" alt="Second slide" style="height: 200px">
-                </div>
-                <div class="carousel-item">
-                  <img class="d-block img-fluid" src="img/pexels-photo-186077.jpg" alt="Third slide" style="height: 200px">
-                </div>
+                <?
+                  $fotos = $item->getFotografias()->all();
+                  $count = 0;
+                  foreach ($fotos as $pic):?>
+                      <div class="carousel-item <?=$count==0?'active':''?>">
+                          <div class="carrusel_img" style="background-image: url('<?=Yii::$app->homeUrl?>uploads/<?=$item->txt_token?>/<?=$pic->txt_url?>');">
+                           
+                        </div>
+                      </div>
+              <?php
+                  $count++;
+                  endforeach;
+              ?>
               </div>
+
               <a class="carousel-control-prev" href="#carousel_<?=$item->id_propiedad?>" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="sr-only">Previous</span>
@@ -57,27 +114,17 @@ $this->title = 'Home';
             <p class="card-text">
               <img src="img/ico/ico_loc.png" class="ico"> Col. <?=$item->direcciones[0]->txt_colonia?>, 
               <?=$item->direcciones[0]->idMunicipio->txt_nombre?>, 
-              <?=$item->direcciones[0]->idMunicipio->idEstado->txt_nombre?>
+              <?=$item->direcciones[0]->idCiudad->txt_nombre?>,
+              <?=$item->direcciones[0]->idEstado->txt_nombre?>
             </p>
             <p class="card-text">
               <img src="img/ico/ico_size.png" class="ico"> 
               <?=$item->num_metros?> m2
             </p>  
-              <?php 
-              //var_dump($item->relPropiedadCaracteristicas);
-              /*foreach ($item->relPropiedadCaracteristicas as $elem):
-              ?>
-                <p class="card-text">
-                  <?=$elem->idCaracteristicaPropiedad->txt_nombre?>:
-                  <?=$elem->txt_valor?>
-                </p>    
-              <?php                
-              endforeach
-              */
-              ?>
-            </p>
+          
             
-            <a href="index.php?r=propiedades%2Fview&id=<?=$item->txt_token?>" class="btn btn-primary">Ver propiedad</a>
+            
+            <a href="<?=Yii::$app->homeUrl?>propiedades/view?id=<?=$item->txt_token?>" class="btn btn-primary">Ver propiedad</a>
           </div>
         </div>
 
@@ -91,12 +138,14 @@ $this->title = 'Home';
 
 $( document ).ready(function() {
 
-        console.log("foreach");
-    $('.carousel').each(function(index){
-        console.log($(this));
-        $(this).carousel();
-    });
-});
+    // console.log("foreach");
+    // $('.carousel').each(function(index){
+    //     console.log($(this));
+    //     $(this).carousel();
+    // });
 
-    
+    //Carga el combo de estados
+    loadEstados(1);
+});    
 </script>
+<script type="text/javascript" src="<?=Yii::$app->homeUrl?>js/direcciones.js"></script>
